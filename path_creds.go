@@ -63,7 +63,12 @@ func (b *hcpBackend) pathCredsRead(ctx context.Context, req *logical.Request, da
 		return nil, err
 	}
 
-	// create service principal key
+	// a service principal has no role when created
+	// need to assign the newly created service principal to the role
+	if err := assignServicePrincipalRole(ctx, req, cl, sp, role.Role); err != nil {
+		return nil, err
+	}
+
 	spk, err := createServicePrincipalKey(cl, sp)
 	if err != nil {
 		return nil, err
@@ -77,10 +82,11 @@ func (b *hcpBackend) pathCredsRead(ctx context.Context, req *logical.Request, da
 		},
 		// internal data
 		map[string]interface{}{
-			"vault_role":        name,
-			"resource_name":     spk.Key.ResourceName,
-			"service_principal": sp.ResourceName,
-			"created_at":        spk.Key.CreatedAt,
+			"vault_role":           name,
+			"resource_name":        spk.Key.ResourceName,
+			"service_principal":    sp.ResourceName,
+			"service_principal_id": sp.ID,
+			"created_at":           spk.Key.CreatedAt,
 		},
 	)
 

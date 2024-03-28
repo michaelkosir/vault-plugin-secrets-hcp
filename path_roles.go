@@ -96,7 +96,7 @@ func (b *hcpBackend) pathRoleWrite(ctx context.Context, req *logical.Request, da
 	}
 
 	if role != "admin" && role != "contributor" && role != "viewer" {
-		return logical.ErrorResponse("role is invalid. Valid values: `Admin`, `Contributor`, `Viewer` "), nil
+		return logical.ErrorResponse("role is invalid. Valid values: `admin`, `contributor`, `viewer` "), nil
 	}
 
 	r := &hcpRole{
