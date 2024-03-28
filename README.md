@@ -6,10 +6,7 @@ that can dynamically generate HCP service principal keys.
 
 ## TODO
 - [ ] Locks
-- [ ] WAL
 - [ ] Tests
-- [ ] Organization Level Tokens
-- [ ] Specific Role for Service Principal
 
 ## Important
 - Organization level service principals are **very powerful** and should be used sparingly.
@@ -18,7 +15,7 @@ that can dynamically generate HCP service principal keys.
 
 ## Overview
 This is a standalone backend plugin for use with [Hashicorp
-Vault](https://www.github.com/hashicorp/vault). This plugin generates revocable, time-limited service principals for HCP Organizations and Projects.
+Vault](https://www.github.com/hashicorp/vault). This plugin generates revocable, time-limited service principals for HCP Projects.
 
 Please note: We take Vault's security and our users' trust very seriously. If
 you believe you have found a security issue in Vault, please responsibly
