@@ -8,6 +8,7 @@ import (
 
 	iam "github.com/hashicorp/hcp-sdk-go/clients/cloud-iam/stable/2019-12-10/client/iam_service"
 	service_principals "github.com/hashicorp/hcp-sdk-go/clients/cloud-iam/stable/2019-12-10/client/service_principals_service"
+	project "github.com/hashicorp/hcp-sdk-go/clients/cloud-resource-manager/stable/2019-12-10/client/project_service"
 
 	hcpClientConfig "github.com/hashicorp/hcp-sdk-go/config"
 	"github.com/hashicorp/hcp-sdk-go/httpclient"
@@ -19,6 +20,7 @@ const hcpPluginUserAgent = "vault-plugin-secrets-hcp"
 type hcpClient struct {
 	IAM               iam.ClientService
 	ServicePrincipals service_principals.ClientService
+	Project           project.ClientService
 }
 
 func (b *hcpBackend) getClient(ctx context.Context, s logical.Storage) (*hcpClient, error) {
@@ -73,6 +75,7 @@ func newClient(cfg *hcpConfig) (*hcpClient, error) {
 	client := &hcpClient{
 		IAM:               iam.New(cl, nil),
 		ServicePrincipals: service_principals.New(cl, nil),
+		Project:           project.New(cl, nil),
 	}
 
 	return client, nil
