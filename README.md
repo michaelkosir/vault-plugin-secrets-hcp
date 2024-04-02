@@ -7,6 +7,7 @@ that can dynamically generate HCP service principal keys.
 ## TODO
 - [ ] Locks
 - [ ] Tests
+- [ ] Static Roles
 
 ## Important
 - Organization level service principals are **very powerful** and should be used sparingly.
