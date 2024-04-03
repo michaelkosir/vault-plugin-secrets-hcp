@@ -5,7 +5,7 @@ This Vault secrets plugin is not officially maintained or supported by HashiCorp
 that can dynamically generate HCP service principal keys.
 
 <p align="center">
-  <img width="50%" src="./img/usecase.png" />
+  <img width="60%" src="./img/usecase.png" />
 </p>
 
 ## TODO
