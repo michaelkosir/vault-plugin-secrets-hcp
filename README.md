@@ -4,7 +4,9 @@
 This Vault secrets plugin is not officially maintained or supported by HashiCorp. It exists as a proof of value for a Vault secrets engine
 that can dynamically generate HCP service principal keys.
 
-<img width="50%" src="./img/usecase.png">
+<p align="center">
+  <img width="50%" src="./img/usecase.png" />
+</p>
 
 ## TODO
 - [ ] Locks
