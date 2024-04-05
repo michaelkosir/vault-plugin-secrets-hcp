@@ -59,6 +59,9 @@ $ vault write hcp/config \
 # read configuration
 $ vault read hcp/config
 
+# patch configuration
+$ vault patch hcp/config organization="..."
+
 # rotate initial credentials
 $ vault write -f hcp/config/rotate
 

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/hashicorp/hcp-sdk-go/clients/cloud-iam/stable/2019-12-10/models"
 	"github.com/hashicorp/vault/sdk/framework"
 	"github.com/hashicorp/vault/sdk/logical"
 )
@@ -51,6 +50,12 @@ func (b *hcpBackend) pathConfig() *framework.Path {
 		Operations: map[logical.Operation]framework.OperationHandler{
 			logical.UpdateOperation: &framework.PathOperation{
 				Callback: b.pathConfigWrite,
+				DisplayAttrs: &framework.DisplayAttributes{
+					OperationSuffix: "configuration",
+				},
+			},
+			logical.PatchOperation: &framework.PathOperation{
+				Callback: b.pathConfigPatch,
 				DisplayAttrs: &framework.DisplayAttributes{
 					OperationSuffix: "configuration",
 				},
@@ -102,6 +107,21 @@ func (b *hcpBackend) pathConfigWrite(ctx context.Context, req *logical.Request, 
 	}
 
 	if err := saveConfig(ctx, req.Storage, cfg); err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+func (b *hcpBackend) pathConfigPatch(ctx context.Context, req *logical.Request, data *framework.FieldData) (*logical.Response, error) {
+	cfg := &hcpConfig{
+		OrganizationID: data.Get("organization").(string),
+		ProjectID:      data.Get("project").(string),
+		ClientID:       data.Get("client_id").(string),
+		ClientSecret:   data.Get("client_secret").(string),
+	}
+
+	if err := patchConfig(ctx, req, cfg); err != nil {
 		return nil, err
 	}
 
@@ -162,24 +182,29 @@ func saveConfig(ctx context.Context, s logical.Storage, cfg *hcpConfig) error {
 	return nil
 }
 
-// TODO: Turn this into `patchConfig` to handle modification of any config values
-func replaceConfigServicePrincipalKey(ctx context.Context, req *logical.Request, spk *models.HashicorpCloudIamCreateServicePrincipalKeyResponse) error {
+func patchConfig(ctx context.Context, req *logical.Request, patch *hcpConfig) error {
 	cfg, err := getConfig(ctx, req.Storage)
 	if err != nil {
 		return err
 	}
 
-	entry, err := logical.StorageEntryJSON("config", hcpConfig{
-		OrganizationID: cfg.OrganizationID,
-		ProjectID:      cfg.ProjectID,
-		ClientID:       spk.Key.ClientID,
-		ClientSecret:   spk.ClientSecret,
-	})
-	if err != nil {
-		return err
+	if patch.OrganizationID != "" {
+		cfg.OrganizationID = patch.OrganizationID
 	}
 
-	if err := req.Storage.Put(ctx, entry); err != nil {
+	if patch.ProjectID != "" {
+		cfg.ProjectID = patch.ProjectID
+	}
+
+	if patch.ClientID != "" {
+		cfg.ClientID = patch.ClientID
+	}
+
+	if patch.ClientSecret != "" {
+		cfg.ClientSecret = patch.ClientSecret
+	}
+
+	if err := saveConfig(ctx, req.Storage, cfg); err != nil {
 		return err
 	}
 

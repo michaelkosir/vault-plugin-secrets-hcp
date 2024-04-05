@@ -42,7 +42,11 @@ func (b *hcpBackend) pathConfigRotateWrite(ctx context.Context, req *logical.Req
 		return nil, err
 	}
 
-	if err := replaceConfigServicePrincipalKey(ctx, req, newSPK); err != nil {
+	patch := &hcpConfig{
+		ClientID:     newSPK.Key.ClientID,
+		ClientSecret: newSPK.ClientSecret,
+	}
+	if err := patchConfig(ctx, req, patch); err != nil {
 		return nil, err
 	}
 
